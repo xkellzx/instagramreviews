@@ -1,0 +1,112 @@
+# Play Store Reviews Text Mining
+
+# import data
+Facebook <- read.csv("/Users/Kelly/Downloads/Summer2022/datasets/playstorereviews/Facebook.csv", stringsAsFactors=FALSE)
+Instagram <- read.csv("/Users/Kelly/Downloads/Summer2022/datasets/playstorereviews/Instagram.csv", stringsAsFactors=FALSE)
+Snapchat <- read.csv("/Users/Kelly/Downloads/Summer2022/datasets/playstorereviews/Snapchat.csv", stringsAsFactors=FALSE)
+Spotify <- read.csv("/Users/Kelly/Downloads/Summer2022/datasets/playstorereviews/Spotify.csv", stringsAsFactors=FALSE)
+TikTok <- read.csv("/Users/Kelly/Downloads/Summer2022/datasets/playstorereviews/TikTok.csv", stringsAsFactors=FALSE)
+Twitter <- read.csv("/Users/Kelly/Downloads/Summer2022/datasets/playstorereviews/Twitter.csv", stringsAsFactors=FALSE)
+
+head(Facebook)
+str(Facebook)
+
+# word frequency table
+#install.packages('tm')
+library(tm)
+review_text <- paste(Facebook$content, collapse=" ")
+review_source <- VectorSource(review_text)
+corpus <- Corpus(review_source)
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeWords, stopwords('english'))
+dtm <- DocumentTermMatrix(corpus)
+dtm2 <- as.matrix(dtm)
+frequency_FB <- colSums(dtm2)
+frequency_FB <- sort(frequency_FB, decreasing=TRUE)
+head(frequency_FB)
+
+# word cloud (for fun!)
+#install.packages('wordcloud')
+library(wordcloud)
+words <- names(frequency_FB)
+wordcloud(words[1:100], frequency_FB[1:100])
+
+# repeat for other files
+# Instagram
+review_text <- paste(Instagram$content, collapse=" ")
+review_source <- VectorSource(review_text)
+corpus <- Corpus(review_source)
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeWords, stopwords('english'))
+dtm <- DocumentTermMatrix(corpus)
+dtm2 <- as.matrix(dtm)
+frequency_IG <- colSums(dtm2)
+frequency_IG <- sort(frequency_IG, decreasing=TRUE)
+head(frequency_IG)
+
+# Snapchat
+review_text <- paste(Snapchat$content, collapse=" ")
+review_source <- VectorSource(review_text)
+corpus <- Corpus(review_source)
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeWords, stopwords('english'))
+dtm <- DocumentTermMatrix(corpus)
+dtm2 <- as.matrix(dtm)
+frequency_SC <- colSums(dtm2)
+frequency_SC <- sort(frequency_SC, decreasing=TRUE)
+head(frequency_SC)
+
+# Spotify
+review_text <- paste(Spotify$content, collapse=" ")
+review_source <- VectorSource(review_text)
+corpus <- Corpus(review_source)
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeWords, stopwords('english'))
+dtm <- DocumentTermMatrix(corpus)
+dtm2 <- as.matrix(dtm)
+frequency_SP <- colSums(dtm2)
+frequency_SP <- sort(frequency_SP, decreasing=TRUE)
+head(frequency_SP)
+
+# TikTok
+review_text <- paste(TikTok$content, collapse=" ")
+review_source <- VectorSource(review_text)
+corpus <- Corpus(review_source)
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeWords, stopwords('english'))
+dtm <- DocumentTermMatrix(corpus)
+dtm2 <- as.matrix(dtm)
+frequency_TT <- colSums(dtm2)
+frequency_TT <- sort(frequency_TT, decreasing=TRUE)
+head(frequency_TT)
+
+# Twitter
+review_text <- paste(Twitter$content, collapse=" ")
+review_source <- VectorSource(review_text)
+corpus <- Corpus(review_source)
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeWords, stopwords('english'))
+dtm <- DocumentTermMatrix(corpus)
+dtm2 <- as.matrix(dtm)
+frequency_TW <- colSums(dtm2)
+frequency_TW <- sort(frequency_TW, decreasing=TRUE)
+head(frequency_TW)
+
+# final table
+reviews <- rbind(frequency_FB, frequency_IG, frequency_SC, frequency_SP, frequency_TT, frequency_TW)
+IG_reviews <- colSums(reviews)
+head(IG_reviews)
+
+write.csv(IG_reviews,"review.csv", row.names = TRUE)
